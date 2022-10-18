@@ -19,6 +19,17 @@ class ListaAquarios(Resource):
 
         return {'aquarios_livres': lista_livres, 'aquarios_reservados': lista_reservados}, 200
 
+class Aquario(Resource):
+    def get(self, predio, andar, numero):
+        aquarios = AquarioModel.list_all()
+
+        for aquario in aquarios:
+            if aquario.building == predio:
+                if aquario.floor == andar:
+                    if aquario.number == numero:
+                        return aquario.to_dict(),200
+        return {'Usuário não encontrado'}, 404
+
     def put(self):
         corpo = request.get_json(force=True)
         aquario = AquarioModel.find_by_id(corpo['id'])

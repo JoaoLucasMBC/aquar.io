@@ -7,7 +7,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from model.aquario_modelo import AquarioModel
-from resources.aquario_rotas import ListaAquarios
+from resources.aquario_rotas import Aquario, ListaAquarios
 
 
 from model.sql_alchemy_flask import db
@@ -46,6 +46,7 @@ def hello_world():
 
 
 api.add_resource(ListaAquarios, '/aquario/<int:predio>')
+api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
 
 if __name__ == '__main__':
