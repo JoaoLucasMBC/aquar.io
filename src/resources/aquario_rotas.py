@@ -14,3 +14,13 @@ class ListaAquarios(Resource):
         
 
         return {'aquarios': lista}, 200
+
+    def put(self):
+        corpo = request.get_json(force=True)
+        aquario = AquarioModel.find_by_id(corpo['id'])
+
+        if aquario:
+            aquario.status = corpo['status']
+            return aquario.to_dict()            
+        
+        return {'Usuário não encontrado'}, 404
