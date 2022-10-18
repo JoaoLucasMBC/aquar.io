@@ -32,7 +32,6 @@ admin.add_view(ModelView(UsuarioModel, db.session))
 #https://docs.sqlalchemy.org/en/14/core/engines.html
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'r4AKmLM41NljU9iU1IRlZw'
 api = Api(app)
 
 
