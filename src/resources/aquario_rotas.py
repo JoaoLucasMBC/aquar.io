@@ -5,12 +5,16 @@ from model.aquario_modelo import AquarioModel
 
 
 class ListaAquarios(Resource):
-    def get(self):
-        todos_aquarios = AquarioModel.list_all()
+    def get(self, predio):
+        todos_aquarios = AquarioModel.filter_by_building(predio)
 
-        lista = []
+        lista_livres = []
+        lista_reservados = []
         for aquario in todos_aquarios:
-            lista.append(aquario.to_dict())
+            if aquario.status == True:
+                lista_reservados.append(aquario.to_dict())
+            else:
+                lista_livres.append(aquario.to_dict())
         
 
-        return {'aquarios': lista}, 200
+        return {'aquarios_livres': lista_livres, 'aquarios_reservados': lista_reservados}, 200
