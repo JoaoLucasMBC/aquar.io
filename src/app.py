@@ -45,7 +45,7 @@ def hello_world():
     return f"<p>Hello, World!</p>"
 
 
-api.add_resource(ListaAquarios, '/aquario/')
+api.add_resource(ListaAquarios, '/aquario/<int:predio>')
 api.add_resource(Usuario, '/usuario')
 
 if __name__ == '__main__':
