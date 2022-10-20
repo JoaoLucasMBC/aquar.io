@@ -11,7 +11,7 @@ from resources.aquario_rotas import Aquario, ListaAquarios
 
 
 from model.sql_alchemy_flask import db
-from model.usuario_modelo import UsuarioModel
+from model.todos_modelos import UsuarioModel
 from resources.usuario_rotas import Usuario
 
 
