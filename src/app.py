@@ -7,7 +7,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from model.aquario_modelo import AquarioModel
-from resources.aquario_rotas import ListaAquarios
+from resources.aquario_rotas import Aquario, ListaAquarios
 
 
 from model.sql_alchemy_flask import db
@@ -32,7 +32,6 @@ admin.add_view(ModelView(UsuarioModel, db.session))
 #https://docs.sqlalchemy.org/en/14/core/engines.html
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'r4AKmLM41NljU9iU1IRlZw'
 api = Api(app)
 
 
@@ -46,7 +45,8 @@ def hello_world():
     return f"<p>Hello, World!</p>"
 
 
-api.add_resource(ListaAquarios, '/aquario/')
+api.add_resource(ListaAquarios, '/aquario/<int:predio>')
+api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
 
 if __name__ == '__main__':

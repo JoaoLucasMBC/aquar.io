@@ -38,6 +38,9 @@ class AquarioModel(db.Model):
     def list_all(cls):
         return cls.query.all()
     
+    @classmethod
+    def filter_by_building(cls, predio:int):
+        return cls.query.filter_by(building = predio)
 
     @classmethod
     def find_by_id(cls, id:int):
