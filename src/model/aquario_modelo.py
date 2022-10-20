@@ -8,11 +8,12 @@ class AquarioModel(db.Model):
     building = db.Column(db.Integer)
     floor = db.Column(db.Integer)
     number = db.Column(db.Integer)
-    info = db.Column(db.String)
+    info = db.Column(db.String, unique=True)
     status = db.Column(db.Boolean, default=False)
     capacity = db.Column(db.Integer)
     num_people = db.Column(db.Integer, default=0)
-    db.relationship('ReservaModel', backref='aquario')
+
+    reservas = db.relationship('ReservaModel', secondary='reserva_table', backref='aquario')
 
     def __init__(self, building:int, floor:int, number:int, capacity:int, status=False):
         self.building = building

@@ -1,12 +1,15 @@
 from model.sql_alchemy_flask import db
 
+
 class UsuarioModel(db.Model):
     _tablename_ = 'usuario_model'
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80))
+    email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(20))
     user = db.Column(db.String(20))
+
+    reservas = db.relationship('ReservaModel', secondary='reserva_table', backref='usuario')
     
     def __init__(self, email, password, user):
         self.user= user
