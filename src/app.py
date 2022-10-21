@@ -6,12 +6,12 @@ from pathlib import Path
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
-from model.aquario_modelo import AquarioModel
+#from model.aquario_modelo import AquarioModel
 from resources.aquario_rotas import Aquario, ListaAquarios
 
 
 from model.sql_alchemy_flask import db
-from model.usuario_modelo import UsuarioModel
+from model.usuario_modelo import UsuarioModel, AquarioModel, reserva_table, ReservaModel
 from resources.usuario_rotas import Usuario
 
 
@@ -29,6 +29,7 @@ app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 admin = Admin(app, name='aquar.io', template_mode='bootstrap3')
 admin.add_view(ModelView(AquarioModel, db.session))
 admin.add_view(ModelView(UsuarioModel, db.session))
+admin.add_view(ModelView(ReservaModel, db.session))
 #https://docs.sqlalchemy.org/en/14/core/engines.html
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -38,6 +39,11 @@ api = Api(app)
 @app.before_first_request
 def create_tables():
     db.create_all()
+
+    aquario = Aquario.list_all().first()
+    usuario = Usuario.list_all().first()
+
+    
 
 
 @app.route("/")
