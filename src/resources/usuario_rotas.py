@@ -1,7 +1,7 @@
 from types import CoroutineType
 from flask_restful import Resource
 from flask import request, jsonify
-from model.usuario_modelo import UsuarioModel
+from model.models import UsuarioModel
 
 class Usuario(Resource):
 

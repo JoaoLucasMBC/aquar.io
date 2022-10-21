@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, jsonify
-from model.aquario_modelo import AquarioModel
+from model.models import AquarioModel
 
 
 
