@@ -6,12 +6,11 @@ from pathlib import Path
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
-#from model.aquario_modelo import AquarioModel
 from resources.aquario_rotas import Aquario, ListaAquarios
 
 
 from model.sql_alchemy_flask import db
-from model.usuario_modelo import UsuarioModel, AquarioModel, reserva_table, ReservaModel
+from model.models import UsuarioModel, AquarioModel, ReservaModel
 from resources.usuario_rotas import Usuario
 
 
@@ -39,11 +38,6 @@ api = Api(app)
 @app.before_first_request
 def create_tables():
     db.create_all()
-
-    aquario = Aquario.list_all().first()
-    usuario = Usuario.list_all().first()
-
-    
 
 
 @app.route("/")

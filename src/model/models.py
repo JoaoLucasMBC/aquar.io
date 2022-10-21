@@ -1,17 +1,20 @@
 from model.sql_alchemy_flask import db
-from sqlalchemy.orm import backref
 
-
-reserva_table = db.Table('reserva_table',
-    db.Column('id', db.Integer, primary_key=True),
-    db.Column('usuario_id', db.Integer, db.ForeignKey('usuario_model.id')),
-    db.Column('aquario_id', db.Integer, db.ForeignKey('aquario_model.id'))
-)
 
 class ReservaModel(db.Model):
     __tablename__ = "reserva_model"
 
-    id = db.Column(db.Integer, db.ForeignKey('reserva_table'), primary_key=True)
+    usuario_id = db.Column(db.ForeignKey('usuario_model.id'), primary_key=True)
+    aquario_id = db.Column(db.ForeignKey('aquario_model.id'), primary_key=True)
+    # esta_aberta = db.Column(db.Boolean, default=True)
+
+    usuario = db.relationship("UsuarioModel", back_populates='reservas')
+    aquario = db.relationship("AquarioModel", back_populates='reservas')
+
+    def __repr__(self):
+        return f"ReservaModel(usuario_id={self.usuario_id}, aquario_id={self.aquario_id})"
+
+
 
 class UsuarioModel(db.Model):
     _tablename_ = 'usuario_model'
@@ -20,6 +23,8 @@ class UsuarioModel(db.Model):
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(20))
     user = db.Column(db.String(20))
+
+    reservas = db.relationship("ReservaModel", back_populates="usuario")
     
     def __init__(self, email, password, user):
         self.user= user
@@ -27,6 +32,10 @@ class UsuarioModel(db.Model):
         self.password = password
         self.monthly_limit = 2
         self.pending = True
+    
+
+    def __repr__(self):
+        return f"User('{self.user}', '{self.email}')"
 
     def to_dict(self):
         return {'usuario': self.user, 'email': self.email}
@@ -51,6 +60,8 @@ class UsuarioModel(db.Model):
     # def find_by_id(cls, id):
     #     return cls.query.filter_by(id = id).first()
 
+
+
 class AquarioModel(db.Model):
     __tablename__ = "aquario_model"
 
@@ -63,6 +74,8 @@ class AquarioModel(db.Model):
     capacity = db.Column(db.Integer)
     num_people = db.Column(db.Integer, default=0)
 
+    reservas = db.relationship("ReservaModel", back_populates="aquario")
+
     def __init__(self, building:int, floor:int, number:int, capacity:int, status=False):
         self.building = building
         self.floor = floor
@@ -72,6 +85,9 @@ class AquarioModel(db.Model):
         self.capacity = capacity
         self.num_people = 0
     
+    def __repr__(self):
+        return f"Aquario('{self.info}', '{self.status}')"
+
 
     def save(self):
         db.session.add(self)
