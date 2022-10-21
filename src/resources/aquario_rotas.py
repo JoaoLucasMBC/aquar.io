@@ -30,12 +30,18 @@ class Aquario(Resource):
                         return aquario.to_dict(),200
         return {'Usuário não encontrado'}, 404
 
-    def put(self):
-        corpo = request.get_json(force=True)
-        aquario = AquarioModel.find_by_id(corpo['id'])
+    def put(self, predio, andar, numero):
+        aquarios = AquarioModel.list_all()
 
-        if aquario:
-            aquario.status = corpo['status']
-            return aquario.to_dict()            
+        for aquario in aquarios:
+            if aquario.building == predio:
+                if aquario.floor == andar:
+                    if aquario.number == numero:
+                        if aquario.status == True:
+                            aquario.status = False
+                        elif aquario.status == False:
+                            aquario.status = True
+                        aquario.save()
+                        return aquario.to_dict(),200          
         
         return {'Usuário não encontrado'}, 404
