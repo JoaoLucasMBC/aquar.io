@@ -48,6 +48,7 @@ def hello_world():
 api.add_resource(ListaAquarios, '/aquario/<int:predio>')
 api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
+api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>/reservas')
 
 if __name__ == '__main__':
     db.init_app(app)

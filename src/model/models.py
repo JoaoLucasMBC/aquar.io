@@ -1,4 +1,5 @@
 from model.sql_alchemy_flask import db
+import datetime
 
 
 class ReservaModel(db.Model):
@@ -6,10 +7,19 @@ class ReservaModel(db.Model):
 
     usuario_id = db.Column(db.ForeignKey('usuario_model.id'), primary_key=True)
     aquario_id = db.Column(db.ForeignKey('aquario_model.id'), primary_key=True)
-    # esta_aberta = db.Column(db.Boolean, default=True)
+    esta_aberta = db.Column(db.Boolean, default=True)
 
     usuario = db.relationship("UsuarioModel", back_populates='reservas')
     aquario = db.relationship("AquarioModel", back_populates='reservas')
+
+    horario = db.Column(db.Datetime)
+    blocos = db.Column(db.Integer)
+
+    def __init__(self, usuario_id, aquario_id):
+        self.usuario_id = usuario_id
+        self.aquario_id = aquario_id
+        self.esta_aberta = True
+
 
     def __repr__(self):
         return f"ReservaModel(usuario_id={self.usuario_id}, aquario_id={self.aquario_id})"
@@ -73,6 +83,7 @@ class AquarioModel(db.Model):
     status = db.Column(db.Boolean, default=False)
     capacity = db.Column(db.Integer)
     num_people = db.Column(db.Integer, default=0)
+    last_updated = db.Column(db.DateTime, onupdate=datetime.datetime.now)
 
     reservas = db.relationship("ReservaModel", back_populates="aquario")
 
@@ -84,6 +95,7 @@ class AquarioModel(db.Model):
         self.status = status
         self.capacity = capacity
         self.num_people = 0
+        self.last_updated = datetime.datetime.now()
     
     def __repr__(self):
         return f"Aquario('{self.info}', '{self.status}')"
@@ -119,5 +131,6 @@ class AquarioModel(db.Model):
             'number': self.number,
             'status': self.status,
             'capacity': self.capacity,
-            'num_people': self.num_people
+            'num_people': self.num_people,
+            'last_updated': self.last_updated
         }
