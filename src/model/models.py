@@ -15,6 +15,14 @@ class ReservaModel(db.Model):
         return f"ReservaModel(usuario_id={self.usuario_id}, aquario_id={self.aquario_id})"
 
 
+    @classmethod
+    def find_by_user(cls, usuario):
+        return cls.query.filter_by(usuario = usuario).first()
+    
+    @classmethod
+    def find_by_aquario(cls, aquario):
+        return cls.query.filter_by(aquario = aquario).first()
+
 
 class UsuarioModel(db.Model):
     _tablename_ = 'usuario_model'
