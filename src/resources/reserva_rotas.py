@@ -24,14 +24,20 @@ class Reserva(Resource):
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:
-            horario = datetime.datetime(corpo["year"], corpo["month"], corpo["day"], corpo["hour"], corpo["minute"], corpo["second"])
+            horario_inicial = datetime.datetime(corpo["year"], corpo["month"], corpo["day"], corpo["hour"], corpo["minute"], corpo["second"])
+            horario_final = ReservaModel.hour_calculator(data=horario_inicial, blocos=corpo["blocos"])
 
-            reserva = ReservaModel(usuario_id=session["user_id"], aquario_id=aquario.id, horario=horario, blocos=corpo["blocos"])
-            reserva.save()
+            success = ReservaModel.reserva_check(horario_inicial,horario_final,aquario.id)
 
-            return redirect("reserva", code=201)
-            
+            if success:
+                reserva = ReservaModel(usuario_id=1, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
+                reserva.save()
+                return redirect("reserva", code=201)
+        
+            return {'mensagem': "Esses horário estão indisponíveis"}, 400
+
         return {'mensagem': 'Aquário não foi encontrado'}, 404
+
 
 
 class MinhaReserva(Resource):
@@ -40,6 +46,6 @@ class MinhaReserva(Resource):
         if user != 0:
             reserva = ReservaModel.find_by_user(user)
             if reserva:
-                return reserva, 200
+                return jsonify(reserva), 200
             else:
                 return {'mensagem': 'Reserva não encontrada'}, 404
