@@ -53,6 +53,6 @@ class MinhaReserva(Resource):
             reservas = ReservaModel.find_by_user(current_user)
             if reservas:
                 reservas = [reserva.to_dict() for reserva in reservas]
-                return {'reservas': reservas}, 200 # MELHROAR ISSO!!!!!
+                return {'reservas': reservas}, 200
             else:
                 return {'mensagem': 'Reserva não encontrada'}, 404

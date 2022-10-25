@@ -1,3 +1,5 @@
+import datetime
+ 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
@@ -14,7 +16,8 @@ from model.sql_alchemy_flask import db
 from model.models import UsuarioModel, AquarioModel, ReservaModel
 from resources.usuario_rotas import Usuario
 from resources.reserva_rotas import MinhaReserva, Reserva
-from auth import auth
+
+from resources.auth_rotas import auth
 from flask_login import LoginManager, login_required
 
 
@@ -51,6 +54,19 @@ api = Api(app)
 @app.before_first_request
 def create_tables():
     db.create_all()
+
+
+@app.after_request
+def exclui_reservas(response):
+    reservas = ReservaModel.list_all()
+    for reserva in reservas:
+        if reserva:
+            if reserva.horario_final < datetime.datetime.now():
+                reserva.esta_aberta = False
+                reserva.save()
+            if reserva.horario_final.month < datetime.datetime.now().month:
+                reserva.delete()
+    return response
 
 
 @app.route("/")
