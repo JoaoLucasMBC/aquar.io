@@ -12,13 +12,43 @@ class ReservaModel(db.Model):
     usuario = db.relationship("UsuarioModel", back_populates='reservas')
     aquario = db.relationship("AquarioModel", back_populates='reservas')
 
-    horario = db.Column(db.Datetime)
+    horario = db.Column(db.DateTime)
     blocos = db.Column(db.Integer)
 
-    def __init__(self, usuario_id, aquario_id):
+    def __init__(self, usuario_id, aquario_id, horario, blocos):
         self.usuario_id = usuario_id
         self.aquario_id = aquario_id
         self.esta_aberta = True
+        self.horario = horario
+        self.blocos = blocos
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+    
+    @classmethod
+    def hour_calculator(cls,data,blocos):
+        minute = data.minute
+        hour = data.hour
+
+        minute += blocos * 30
+        while minute >= 60:
+            minute -= 60
+            hour += 1
+        return datetime.datetime(data.year,data.month,data.day,hour,minute,data.second)
+
+    def to_dict(self):
+        return {
+            'usuario_id':self.usuario_id,
+            'aquario_id':self.aquario_id,
+            'esta_aberta':self.esta_aberta,
+            'horario_inicial':self.horario.strftime("%Y/%m/%d, %H:%M:%S"),
+            'horario_final':ReservaModel.hour_calculator(data=self.horario, blocos=self.blocos).strftime("%Y/%m/%d, %H:%M:%S")
+        }
 
 
     def __repr__(self):
