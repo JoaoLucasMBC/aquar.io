@@ -152,6 +152,18 @@ class AquarioModel(db.Model):
     def find_by_id(cls, id:int):
         return cls.query.filter_by(id=id).first()
     
+    @classmethod
+    def find_aquario(cls, building, floor, number):
+        aquarios = cls.list_all()
+
+        for aquario in aquarios:
+            if aquario.building == building:
+                if aquario.floor == floor:
+                    if aquario.number == number:
+                        return aquario, True
+        
+        return None, False
+    
 
     def to_dict(self):
         return {
