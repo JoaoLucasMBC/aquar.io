@@ -2,17 +2,23 @@ from flask_restful import Resource
 from flask import request, jsonify, session, redirect
 from model.models import ReservaModel, AquarioModel
 
+from flask_login import current_user
+
 import datetime
 
 
 class Reserva(Resource):
-    def get(self, aquario):
-        if aquario != 0:
+    def get(self, predio, andar, numero):
+        aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
+
+        if sucesso:
             reserva = ReservaModel.find_by_aquario(aquario)
             if reserva:
                 return jsonify(reserva), 200
             else:
                 return {'mensagem': 'Reserva não encontrada'}, 404
+        
+        return {'mensagem': 'Aquário não encontrado'}, 404
 
 
     def post(self, predio, andar, numero):
@@ -30,7 +36,7 @@ class Reserva(Resource):
             success = ReservaModel.reserva_check(horario_inicial,horario_final,aquario.id)
 
             if success:
-                reserva = ReservaModel(usuario_id=1, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
+                reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
                 reserva.save()
                 return redirect("reserva", code=201)
         
@@ -42,10 +48,11 @@ class Reserva(Resource):
 
 class MinhaReserva(Resource):
 
-    def get(self, user):
-        if user != 0:
-            reserva = ReservaModel.find_by_user(user)
-            if reserva:
-                return jsonify(reserva), 200
+    def get(self):
+        if current_user:
+            reservas = ReservaModel.find_by_user(current_user)
+            if reservas:
+                reservas = [reserva.to_dict() for reserva in reservas]
+                return {'reservas': reservas}, 200 # MELHROAR ISSO!!!!!
             else:
                 return {'mensagem': 'Reserva não encontrada'}, 404
