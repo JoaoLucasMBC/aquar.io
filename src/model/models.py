@@ -55,7 +55,7 @@ class ReservaModel(db.Model):
         reservas = ReservaModel.list_all()
         for reserva in reservas:
             if (reserva.horario_incial.month == horario_incial.month) and (reserva.horario_incial.day == horario_incial.day) and (reserva.aquario_id == aquario_id):
-                if reserva.horario_incial <= horario_incial and horario_incial <= reserva.horario_final:
+                if reserva.horario_incial <= horario_incial and horario_incial < reserva.horario_final:
                     return False
                 elif reserva.horario_incial < horario_final and horario_final <= reserva.horario_final:
                     return False
