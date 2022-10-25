@@ -4,7 +4,15 @@ from model.models import ReservaModel, AquarioModel
 
 import datetime
 
+
 class Reserva(Resource):
+    def get(self, aquario):
+        if aquario != 0:
+            reserva = ReservaModel.find_by_aquario(aquario)
+            if reserva:
+                return jsonify(reserva), 200
+            else:
+                return {'mensagem': 'Reserva não encontrada'}, 404
 
 
     def post(self, predio, andar, numero):
@@ -24,3 +32,14 @@ class Reserva(Resource):
             return redirect("reserva", code=201)
             
         return {'mensagem': 'Aquário não foi encontrado'}, 404
+
+
+class MinhaReserva(Resource):
+
+    def get(self, user):
+        if user != 0:
+            reserva = ReservaModel.find_by_user(user)
+            if reserva:
+                return reserva, 200
+            else:
+                return {'mensagem': 'Reserva não encontrada'}, 404

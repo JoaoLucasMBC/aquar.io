@@ -13,6 +13,9 @@ from resources.reserva_rotas import Reserva
 from model.sql_alchemy_flask import db
 from model.models import UsuarioModel, AquarioModel, ReservaModel
 from resources.usuario_rotas import Usuario
+from resources.reserva_rotas import MinhaReserva, Reserva
+from auth import auth
+from flask_login import LoginManager, login_required
 
 
 # Resistente a sistema operacional
@@ -26,6 +29,15 @@ caminho_arq_db = src_folder / rel_arquivo_db
 app = Flask(__name__)
 app.secret_key = 'r4AKmLM41NljU9iU1IRlZw'
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+app.register_blueprint(auth, url_prefix='/')
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(id):
+    return UsuarioModel.query.get(int(id))
+
 admin = Admin(app, name='aquar.io', template_mode='bootstrap3')
 admin.add_view(ModelView(AquarioModel, db.session))
 admin.add_view(ModelView(UsuarioModel, db.session))
@@ -42,6 +54,7 @@ def create_tables():
 
 
 @app.route("/")
+@login_required
 def hello_world():
     return f"<p>Hello, World!</p>"
 
@@ -50,6 +63,7 @@ api.add_resource(ListaAquarios, '/aquario/<int:predio>')
 api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
 api.add_resource(Reserva, '/aquario/<int:predio>/<int:andar>/<int:numero>/reserva')
+api.add_resource(MinhaReserva, '/reserva')
 
 if __name__ == '__main__':
     db.init_app(app)
