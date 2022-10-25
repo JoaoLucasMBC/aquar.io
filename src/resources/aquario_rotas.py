@@ -19,29 +19,27 @@ class ListaAquarios(Resource):
 
         return {'aquarios_livres': lista_livres, 'aquarios_reservados': lista_reservados}, 200
 
+
 class Aquario(Resource):
     def get(self, predio, andar, numero):
-        aquarios = AquarioModel.list_all()
 
-        for aquario in aquarios:
-            if aquario.building == predio:
-                if aquario.floor == andar:
-                    if aquario.number == numero:
-                        return aquario.to_dict(),200
-        return {'Usuário não encontrado'}, 404
+        aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
+
+        if sucesso:
+            return aquario.to_dict(), 200
+
+        return {'mensagem': 'Aquário não encontrado'}, 404
+
 
     def put(self, predio, andar, numero):
-        aquarios = AquarioModel.list_all()
+        aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
-        for aquario in aquarios:
-            if aquario.building == predio:
-                if aquario.floor == andar:
-                    if aquario.number == numero:
-                        if aquario.status == True:
-                            aquario.status = False
-                        elif aquario.status == False:
-                            aquario.status = True
-                        aquario.save()
-                        return aquario.to_dict(),200          
-        
-        return {'Usuário não encontrado'}, 404
+        if sucesso:
+            if aquario.status == True:
+                aquario.status = False
+            elif aquario.status == False:
+                aquario.status = True
+            aquario.save()
+            return aquario.to_dict(), 200          
+
+        return {'mensagem': 'Aquário não encontrado'}, 404

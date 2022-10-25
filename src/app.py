@@ -1,3 +1,5 @@
+import datetime
+ 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
@@ -7,13 +9,15 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from resources.aquario_rotas import Aquario, ListaAquarios
+from resources.reserva_rotas import Reserva
 
 
 from model.sql_alchemy_flask import db
 from model.models import UsuarioModel, AquarioModel, ReservaModel
 from resources.usuario_rotas import Usuario
 from resources.reserva_rotas import MinhaReserva, Reserva
-from auth import auth
+
+from resources.auth_rotas import auth
 from flask_login import LoginManager, login_required
 
 
@@ -52,8 +56,23 @@ def create_tables():
     db.create_all()
 
 
+@app.after_request
+def exclui_reservas(response):
+    reservas = ReservaModel.list_all()
+    for reserva in reservas:
+        if reserva:
+            if reserva.horario_final < datetime.datetime.now():
+                reserva.esta_aberta = False
+                reserva.save()
+            if reserva.horario_final.month < datetime.datetime.now().month:
+                reserva.delete()
+    return response
+
+
 @app.route("/")
-@login_required
+#@login_required
+#if not current_user.is_authenticated:
+#   return *algum JSON*
 def hello_world():
     return f"<p>Hello, World!</p>"
 
@@ -61,7 +80,7 @@ def hello_world():
 api.add_resource(ListaAquarios, '/aquario/<int:predio>')
 api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
-api.add_resource(Reserva, '/aquario/<int:predio>/<int:andar>/<int:numero>/reservas')
+api.add_resource(Reserva, '/aquario/<int:predio>/<int:andar>/<int:numero>/reserva')
 api.add_resource(MinhaReserva, '/reserva')
 
 if __name__ == '__main__':
