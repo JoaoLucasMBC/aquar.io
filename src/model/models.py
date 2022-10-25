@@ -5,22 +5,23 @@ import datetime
 class ReservaModel(db.Model):
     __tablename__ = "reserva_model"
 
-    usuario_id = db.Column(db.ForeignKey('usuario_model.id'), primary_key=True)
-    aquario_id = db.Column(db.ForeignKey('aquario_model.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.ForeignKey('usuario_model.id'))
+    aquario_id = db.Column(db.ForeignKey('aquario_model.id'))
     esta_aberta = db.Column(db.Boolean, default=True)
 
     usuario = db.relationship("UsuarioModel", back_populates='reservas')
     aquario = db.relationship("AquarioModel", back_populates='reservas')
 
-    horario = db.Column(db.DateTime)
-    blocos = db.Column(db.Integer)
+    horario_incial = db.Column(db.DateTime)
+    horario_final = db.Column(db.DateTime)
 
-    def __init__(self, usuario_id, aquario_id, horario, blocos):
+    def __init__(self, usuario_id, aquario_id, horario_inicial, horario_final):
         self.usuario_id = usuario_id
         self.aquario_id = aquario_id
         self.esta_aberta = True
-        self.horario = horario
-        self.blocos = blocos
+        self.horario_incial = horario_inicial
+        self.horario_final = horario_final
 
     def save(self):
         db.session.add(self)
@@ -31,7 +32,12 @@ class ReservaModel(db.Model):
         db.session.commit()
     
     @classmethod
+    def list_all(cls):
+        return cls.query.all()
+    
+    @classmethod
     def hour_calculator(cls,data,blocos):
+        # Cria o horário final da reserva, baseado no horário inicial
         minute = data.minute
         hour = data.hour
 
@@ -39,15 +45,28 @@ class ReservaModel(db.Model):
         while minute >= 60:
             minute -= 60
             hour += 1
+
         return datetime.datetime(data.year,data.month,data.day,hour,minute,data.second)
 
+    @classmethod
+    def reserva_check(cls,horario_incial,horario_final, aquario_id):
+        # Verifica se o horário da reserva sendo criada está livre
+        reservas = ReservaModel.list_all()
+        for reserva in reservas:
+            if (reserva.horario_incial.month == horario_incial.month) and (reserva.horario_incial.day == horario_incial.day) and (reserva.aquario_id == aquario_id):
+                if reserva.horario_incial <= horario_incial and horario_incial <= reserva.horario_final:
+                    return False
+                elif reserva.horario_incial < horario_final and horario_final <= reserva.horario_final:
+                    return False
+        return True
+    
     def to_dict(self):
         return {
             'usuario_id':self.usuario_id,
             'aquario_id':self.aquario_id,
             'esta_aberta':self.esta_aberta,
-            'horario_inicial':self.horario.strftime("%Y/%m/%d, %H:%M:%S"),
-            'horario_final':ReservaModel.hour_calculator(data=self.horario, blocos=self.blocos).strftime("%Y/%m/%d, %H:%M:%S")
+            'horario_inicial':self.horario_incial.strftime("%Y/%m/%d, %H:%M:%S"),
+            'horario_final':self.horario_final.strftime("%Y/%m/%d, %H:%M:%S")
         }
 
 
