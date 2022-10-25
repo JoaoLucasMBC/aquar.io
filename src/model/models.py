@@ -1,4 +1,5 @@
 from model.sql_alchemy_flask import db
+from flask_login import UserMixin
 
 
 class ReservaModel(db.Model):
@@ -24,7 +25,7 @@ class ReservaModel(db.Model):
         return cls.query.filter_by(aquario = aquario).first()
 
 
-class UsuarioModel(db.Model):
+class UsuarioModel(db.Model, UserMixin):
     _tablename_ = 'usuario_model'
     
     id = db.Column(db.Integer, primary_key=True)

@@ -14,6 +14,7 @@ from model.models import UsuarioModel, AquarioModel, ReservaModel
 from resources.usuario_rotas import Usuario
 from resources.reserva_rotas import MinhaReserva, Reserva
 from auth import auth
+from flask_login import LoginManager, login_required
 
 
 # Resistente a sistema operacional
@@ -28,6 +29,14 @@ app = Flask(__name__)
 app.secret_key = 'r4AKmLM41NljU9iU1IRlZw'
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 app.register_blueprint(auth, url_prefix='/')
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(id):
+    return UsuarioModel.query.get(int(id))
+
 admin = Admin(app, name='aquar.io', template_mode='bootstrap3')
 admin.add_view(ModelView(AquarioModel, db.session))
 admin.add_view(ModelView(UsuarioModel, db.session))
@@ -44,6 +53,7 @@ def create_tables():
 
 
 @app.route("/")
+@login_required
 def hello_world():
     return f"<p>Hello, World!</p>"
 
