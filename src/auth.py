@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request,flash, session, url_for
 from model.models import UsuarioModel
 from flask_login import login_user,login_required,logout_user,current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint('auth', __name__)
 
@@ -12,7 +13,7 @@ def login():
 
         user = UsuarioModel.find_by_email(email=email)
         if user:
-            if user.password == password:
+            if check_password_hash(user.password, password):
                 flash('Login Sucess', category='sucess')
                 login_user(user, remember=True)
                 return redirect(url_for('auth.logout'))
@@ -38,7 +39,7 @@ def sign_up():
             flash('Seu usuário deve conter mais de 3 letras',category='error')
         else:
             flash('Conta criada!', category='sucess')
-            new_user = UsuarioModel(email= email, password=password, user =user)
+            new_user = UsuarioModel(email= email, password=generate_password_hash(password,method= 'sha256'), user =user)
             new_user.save()
             return redirect(url_for('auth.login'))
     return render_template('sign_up.html', user=current_user)
