@@ -95,7 +95,7 @@ class UsuarioModel(db.Model, UserMixin):
     reservas = db.relationship("ReservaModel", back_populates="usuario")
     
     def __init__(self, email, password, user):
-        self.user= user
+        self.user = user
         self.email = email
         self.password = password
         self.monthly_limit = 2
@@ -123,10 +123,6 @@ class UsuarioModel(db.Model, UserMixin):
     @classmethod
     def find_by_user(cls, user):
         return cls.query.filter_by(user = user).first()
-    
-    # @classmethod
-    # def find_by_id(cls, id):
-    #     return cls.query.filter_by(id = id).first()
 
 
 

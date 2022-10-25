@@ -54,7 +54,9 @@ def create_tables():
 
 
 @app.route("/")
-@login_required
+#@login_required
+#if not current_user.is_authenticated:
+#   return *algum JSON*
 def hello_world():
     return f"<p>Hello, World!</p>"
 
