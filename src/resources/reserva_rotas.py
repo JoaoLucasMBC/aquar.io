@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request, jsonify, session, redirect
+from flask import request, jsonify, redirect
 from model.models import ReservaModel, AquarioModel
 
 from flask_login import current_user
@@ -42,7 +42,11 @@ class Reserva(Resource):
         
             return {'mensagem': "Esses horário estão indisponíveis"}, 400
 
-        return {'mensagem': 'Aquário não foi encontrado'}, 404
+        return {'mensagem': 'Aquário não foi encontrado'}, 404  
+
+
+    def delete():
+        pass
 
 
 
