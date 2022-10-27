@@ -5,7 +5,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint('auth', __name__)
 
-
+'''
+OBS:
+Ambas as rotas de login e cadastro são incompatíveis com flask_restful, pois utilizam a lib flask_login.
+Por causa disso, as rotas não seguem o modelo de classes do flask_restful, porém foram modeladas seguindo princípios REST.
+'''
 
 @auth.route('/login', methods=['POST'])
 def login():
@@ -40,7 +44,7 @@ def logout():
 
 
 
-@auth.route('/cadastro', methods= ['POST'])
+@auth.route('/usuario', methods= ['POST'])
 def sign_up():
     try:
         corpo = request.get_json(force=True)
