@@ -63,11 +63,13 @@ class ReservaModel(db.Model):
     
     def to_dict(self):
         return {
+            'reserva_id': self.id,
             'usuario_id':self.usuario_id,
-            'aquario_id':self.aquario_id,
+            'aquario':self.aquario.to_dict(),
             'esta_aberta':self.esta_aberta,
-            'horario_inicial':self.horario_incial.strftime("%Y/%m/%d, %H:%M:%S"),
-            'horario_final':self.horario_final.strftime("%Y/%m/%d, %H:%M:%S")
+            'dia': self.horario_incial.strftime("%m/%d"), 
+            'horario_inicial':self.horario_incial.strftime("%H:%M"),
+            'horario_final':self.horario_final.strftime("%H:%M")
         }
 
 
