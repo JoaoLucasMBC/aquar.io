@@ -107,6 +107,16 @@ class ReservaModel(db.Model):
         @return: query das reservas do aquário
         '''
         return cls.query.filter_by(aquario = aquario)
+    
+    @classmethod
+    def find_by_id(cls, id:int):
+        '''
+        Filtra uma reserva específica, e retorna essa reserva
+
+        @param: id
+        @return: reserva
+        '''
+        return cls.query.filter_by(id=id).first()
 
 
 class UsuarioModel(db.Model, UserMixin):
