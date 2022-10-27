@@ -71,9 +71,9 @@ def create_tables():
     new_aquario3 = AquarioModel(building=2, floor=5, number=1, capacity=8)
     new_aquario3.save()
 
-    new_reserva = ReservaModel(user_id=1, aquario_id=1, horario_inicial=datetime.datetime(2022, 10, 30, 12, 0, 0), horario_final=datetime.datetime(2022, 10, 30, 14, 0, 0))
+    new_reserva = ReservaModel(usuario_id=1, aquario_id=1, horario_inicial=datetime.datetime(2022, 10, 30, 12, 0, 0), horario_final=datetime.datetime(2022, 10, 30, 14, 0, 0))
     new_reserva.save()
-    new_reserva1 = ReservaModel(user_id=2, aquario_id=2, horario_inicial=datetime.datetime(2022, 11, 2, 11, 0, 0), horario_final=datetime.datetime(2022, 11, 2, 15, 30, 0))
+    new_reserva1 = ReservaModel(usuario_id=2, aquario_id=2, horario_inicial=datetime.datetime(2022, 11, 2, 11, 0, 0), horario_final=datetime.datetime(2022, 11, 2, 15, 30, 0))
     new_reserva1.save()
 
 
