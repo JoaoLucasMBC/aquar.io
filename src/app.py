@@ -29,6 +29,8 @@ src_folder = FILE.parents[0]
 # caminho para a base
 rel_arquivo_db = Path('model/aquario.db')
 caminho_arq_db = src_folder / rel_arquivo_db
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 app = Flask(__name__)
@@ -48,8 +50,6 @@ admin.add_view(ModelView(AquarioModel, db.session))
 admin.add_view(ModelView(UsuarioModel, db.session))
 admin.add_view(ModelView(ReservaModel, db.session))
 #https://docs.sqlalchemy.org/en/14/core/engines.html
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 api = Api(app)
 
 
