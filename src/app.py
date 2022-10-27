@@ -29,11 +29,12 @@ src_folder = FILE.parents[0]
 # caminho para a base
 rel_arquivo_db = Path('model/aquario.db')
 caminho_arq_db = src_folder / rel_arquivo_db
+
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
-app = Flask(__name__)
 app.secret_key = 'r4AKmLM41NljU9iU1IRlZw'
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 app.register_blueprint(auth, url_prefix='/')
