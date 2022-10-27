@@ -60,6 +60,7 @@ api = Api(app)
 def create_tables():
     db.create_all()
 
+    '''
     new_user = UsuarioModel(email= 'joaolmbc@al.insper.edu.br', password=generate_password_hash('1234567890',method= 'sha256'), user = 'joaolmbc')
     new_user.save()
     new_user1 = UsuarioModel(email= 'liviat1@al.insper.edu.br', password=generate_password_hash('1234567890',method= 'sha256'), user = 'liviat1')
@@ -78,6 +79,7 @@ def create_tables():
     new_reserva.save()
     new_reserva1 = ReservaModel(usuario_id=2, aquario_id=2, horario_inicial=datetime.datetime(2022, 11, 2, 11, 0, 0), horario_final=datetime.datetime(2022, 11, 2, 15, 30, 0))
     new_reserva1.save()
+    '''
 
 
 @app.after_request
