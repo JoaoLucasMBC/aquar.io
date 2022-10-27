@@ -42,7 +42,7 @@ class Aquario(Resource):
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:
-            return make_response(aquario.to_dict(),200)
+            return aquario.to_dict(), 200
 
         return {'mensagem': 'Aquário não encontrado'}, 404
 
@@ -64,7 +64,7 @@ class Aquario(Resource):
             elif aquario.status == False:
                 aquario.status = True
             aquario.save()
-            print('salvo')
-            return make_response(aquario.to_dict(),200)         
+            
+            return aquario.to_dict(), 200  
 
         return {'mensagem': 'Aquário não encontrado'}, 404

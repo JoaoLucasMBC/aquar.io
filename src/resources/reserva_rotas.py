@@ -22,7 +22,7 @@ class Reserva(Resource):
         if sucesso:
             reserva = ReservaModel.find_by_aquario(aquario)
             if reserva:
-                return jsonify(reserva), 200
+                return jsonify(reserva.to_dict()), 200
             else:
                 return {'mensagem': 'Reserva não encontrada'}, 404
         
@@ -61,8 +61,14 @@ class Reserva(Resource):
         return {'mensagem': 'Aquário não foi encontrado'}, 404  
 
 
-    def delete():
-        pass
+    def delete(self, predio, andar, numero):
+        aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
+
+        if sucesso:
+            aquario.delete()
+            return {'mensagem': 'Aquário deletado com sucesso'}, 200
+        
+        return {'mensagem': 'Aquário não encontrado'}, 404
 
 
 
@@ -83,4 +89,4 @@ class MinhaReserva(Resource):
                 reservas = [reserva.to_dict() for reserva in reservas]
                 return {'reservas': reservas}, 200
             else:
-                return {'mensagem': 'Reserva não encontrada'}, 404
+                return {'mensagem': 'Reservas não encontradas'}, 404

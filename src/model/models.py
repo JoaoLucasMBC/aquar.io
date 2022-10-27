@@ -247,5 +247,5 @@ class AquarioModel(db.Model):
             'status': self.status,
             'capacity': self.capacity,
             'num_people': self.num_people,
-            'last_updated': self.last_updated
+            'last_updated': self.last_updated.strftime("%H:%M")
         }
