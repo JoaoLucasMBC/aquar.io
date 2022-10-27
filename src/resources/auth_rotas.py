@@ -9,6 +9,14 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['POST'])
 def login():
+    '''
+    Rota para realizar o login
+    
+    Entrada: 'email', 'senha'
+    Saídas:
+        - Sucesso: 'email', 'user'
+        - Erro: 'mensagem'
+    '''
     try:
         corpo = request.get_json(force=True)
     except:
@@ -34,14 +42,16 @@ def login():
 
 
 
-@auth.route('/logout')
-def logout():
-    return 'z'
-
-
-
 @auth.route('/cadastro', methods= ['POST'])
 def sign_up():
+    '''
+    Rota para realizar o cadastro de usuário
+    
+    Entrada: 'email, senha'
+    Saida: 
+        Sucesso: 'email, user'
+        Erro: 'Mensagem de erro'
+    '''
     try:
         corpo = request.get_json(force=True)
     except:

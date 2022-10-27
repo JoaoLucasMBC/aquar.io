@@ -9,6 +9,14 @@ import datetime
 
 class Reserva(Resource):
     def get(self, predio, andar, numero):
+        '''
+        Rota para encontrar as reservas de um determinado aquário
+
+        Entrada: 'predio, andar, numero'
+        Saida: 
+            Sucesso: dicionário da reserva
+            Erro: 'Mensagem de erro'
+        '''
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:
@@ -22,6 +30,14 @@ class Reserva(Resource):
 
 
     def post(self, predio, andar, numero):
+        '''
+        Rota para adicionar uma reserva em um determinado aquário
+
+        Entrada: 'predio, andar, numero'
+        Saida: 
+            Sucesso: Redireciona para página de reservas individuais
+            Erro: 'Mensagem de erro'
+        '''
         try:
             corpo = request.get_json(force=True)
         except:
@@ -53,6 +69,14 @@ class Reserva(Resource):
 class MinhaReserva(Resource):
 
     def get(self):
+        '''
+        Rota para encontrar as reservas de um determinado usuário
+
+        Entrada: 
+        Saida: 
+            Sucesso: dicionário das reservas
+            Erro: 'Mensagem de erro'
+        '''
         if current_user:
             reservas = ReservaModel.find_by_user(current_user)
             if reservas:
