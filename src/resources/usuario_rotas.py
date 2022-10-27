@@ -6,6 +6,14 @@ from model.models import UsuarioModel
 class Usuario(Resource):
 
     def get(self):
+        '''
+        Rota para encontrar um determinado usuário
+
+        Entrada: 
+        Saida: 
+            Sucesso: dicionário do usuário
+            Erro: 'Mensagem de erro'
+        '''
         corpo = request.get_json(force=True)
         usuario = UsuarioModel.find_by_email(email = corpo['email'])
 
