@@ -6,7 +6,14 @@ import json
 
 
 class ListaAquarios(Resource):
+    
     def get(self, predio):
+        '''
+        Rota para achar os aquarios de determinado predio
+
+        Entrada: predio
+        Saida: aquarios livres e aquarios reservados
+        '''
         todos_aquarios = AquarioModel.filter_by_building(predio)
 
         lista_livres = []
@@ -22,8 +29,16 @@ class ListaAquarios(Resource):
 
 
 class Aquario(Resource):
+    
     def get(self, predio, andar, numero):
+        '''
+        Rota para encontrar um aquario específico
 
+        Entrada: 'predio, andar, numero'
+        Saida: 
+            Sucesso: dicionário do aquário
+            Erro: 'Mensagem de erro'
+        '''
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:
@@ -33,6 +48,14 @@ class Aquario(Resource):
 
 
     def put(self, predio, andar, numero):
+        '''
+        Rota para alterar o status de um aquario específico
+
+        Entrada: 'predio, andar, numero'
+        Saida: 
+            Sucesso: dicionário do aquário com a alteração
+            Erro: 'Mensagem de erro'
+        '''
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:

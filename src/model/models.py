@@ -37,21 +37,32 @@ class ReservaModel(db.Model):
         return cls.query.all()
     
     @classmethod
-    def hour_calculator(cls,data,blocos):
-        # Cria o horário final da reserva, baseado no horário inicial
-        minute = data.minute
-        hour = data.hour
+    def hour_calculator(cls,horario,blocos):
+        '''
+        Calcula o horário final da reserva, baseado no tanto de blocos de 30 minutos e no horário inicial
+
+        @param: horario_inicial, blocos
+        @return: horario_final (objeto tipo datetime)
+        '''
+        minute = horario.minute
+        hour = horario.hour
 
         minute += blocos * 30
         while minute >= 60:
             minute -= 60
             hour += 1
 
-        return datetime.datetime(data.year,data.month,data.day,hour,minute,data.second)
+        return datetime.datetime(horario.year,horario.month,horario.day,hour,minute,horario.second)
 
     @classmethod
     def reserva_check(cls,horario_incial,horario_final, aquario_id):
-        # Verifica se o horário da reserva sendo criada está livre
+        '''
+        Verifica se o horário da reserva sendo criada está livre
+
+        @param: horario_inicial, horario_final, aquario_id
+        @return: True (se o horário está livre), False (se não)
+        '''
+
         reservas = ReservaModel.list_all()
         for reserva in reservas:
             if (reserva.horario_incial.month == horario_incial.month) and (reserva.horario_incial.day == horario_incial.day) and (reserva.aquario_id == aquario_id):
@@ -79,11 +90,23 @@ class ReservaModel(db.Model):
 
     @classmethod
     def find_by_user(cls, usuario):
+        '''
+        Filtra as reservas de um usuário específico, e retorna uma query dessas reservas
+
+        @param: usuario
+        @return: query das reservas do usuario
+        '''
         return cls.query.filter_by(usuario = usuario)
     
     @classmethod
     def find_by_aquario(cls, aquario):
-        return cls.query.filter_by(aquario = aquario).first()
+        '''
+        Filtra todos as reservas pertencentes a um aquário, e retorna uma query com essas reservas
+
+        @param: aquario
+        @return: query das reservas do aquário
+        '''
+        return cls.query.filter_by(aquario = aquario)
 
 
 class UsuarioModel(db.Model, UserMixin):
@@ -120,12 +143,13 @@ class UsuarioModel(db.Model, UserMixin):
 
     @classmethod
     def find_by_email(cls, email):
-        return cls.query.filter_by(email = email).first()
-    
-    @classmethod
-    def find_by_user(cls, user):
-        return cls.query.filter_by(user = user).first()
+        '''
+        Procura o usuário baseado no email
 
+        @param: email
+        @return: usuário com email correspondente
+        '''
+        return cls.query.filter_by(email = email).first()
 
 
 class AquarioModel(db.Model):
@@ -168,18 +192,41 @@ class AquarioModel(db.Model):
 
     @classmethod
     def list_all(cls):
+        '''
+        Lista todos os aquários, retornando eles em uma query
+
+        @return: query de todos os aquários
+        '''
         return cls.query.all()
     
     @classmethod
     def filter_by_building(cls, predio:int):
+        '''
+        Filtra os aquários por prédio do Insper, retornando uma query com todos os aquários de um prédio
+
+        @param: predio
+        @return: query dos aquários do prédio
+        '''
         return cls.query.filter_by(building = predio)
 
     @classmethod
     def find_by_id(cls, id:int):
+        '''
+        Encontra um aquário pelo seu id
+
+        @param: id
+        @return: aquário correspondente
+        '''
         return cls.query.filter_by(id=id).first()
     
     @classmethod
     def find_aquario(cls, building, floor, number):
+        '''
+        Encontra um aquário utilizando o prédio, o andar e o número do aquário
+
+        @param: prédio, andar, número
+        @return: aquário correspondente
+        '''
         aquarios = cls.list_all()
 
         for aquario in aquarios:
