@@ -72,7 +72,11 @@ class Reserva(Resource):
                 if len(current_user.reservas) < 2:
                     reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
                     reserva.save()
-                    return redirect("reserva", code=201)
+                    
+                    return {
+                        'mensagem': 'Reserva feita com sucesso',
+                        'reserva': reserva.to_dict()
+                        }, 201
                 else:
                     return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
         
