@@ -30,6 +30,13 @@ src_folder = FILE.parents[0]
 rel_arquivo_db = Path('model/aquario.db')
 caminho_arq_db = src_folder / rel_arquivo_db
 
+import os
+
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+# rest of connection code using the connection string `uri`
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
