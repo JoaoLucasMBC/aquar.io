@@ -1,6 +1,7 @@
 from flask_restful import Resource
-from flask import request, jsonify
+from flask import make_response, request, jsonify
 from model.models import AquarioModel
+import json
 
 
 
@@ -26,7 +27,7 @@ class Aquario(Resource):
         aquario, sucesso = AquarioModel.find_aquario(predio, andar, numero)
 
         if sucesso:
-            return aquario.to_dict(), 200
+            return make_response(aquario.to_dict(),200)
 
         return {'mensagem': 'Aquário não encontrado'}, 404
 
@@ -40,6 +41,7 @@ class Aquario(Resource):
             elif aquario.status == False:
                 aquario.status = True
             aquario.save()
-            return aquario.to_dict(), 200          
+            print('salvo')
+            return make_response(aquario.to_dict(),200)         
 
         return {'mensagem': 'Aquário não encontrado'}, 404
