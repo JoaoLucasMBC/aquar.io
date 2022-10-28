@@ -2,10 +2,13 @@ from flask import Blueprint, redirect, render_template, request,flash, session, 
 from model.models import UsuarioModel
 from flask_login import login_user,login_required,logout_user,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from cryptography.fernet import Fernet
 
-from token_aquario import fernet
+#from token_aquario import fernet
 
 auth = Blueprint('auth', __name__)
+
+KEY = "b'Yjc21VBWz1xlMfCQj8RAZzoLLedHrDOI9AtDD58DNos='"
 
 '''
 OBS:
@@ -35,6 +38,7 @@ def login():
             flash('Logado com sucesso', category='sucess')
             login_user(user, remember=True, force=True)
 
+            fernet = Fernet(KEY)
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':user.email,

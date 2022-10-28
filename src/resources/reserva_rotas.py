@@ -1,12 +1,13 @@
 from flask_restful import Resource
 from flask import request, jsonify, redirect
 from model.models import ReservaModel, AquarioModel, UsuarioModel
+from cryptography.fernet import Fernet
 
-from flask_login import current_user
-
-from token_aquario import fernet
+#from token_aquario import fernet
 
 import datetime
+
+KEY = "b'Yjc21VBWz1xlMfCQj8RAZzoLLedHrDOI9AtDD58DNos='"
 
 def formata_data(string_data):
     valido = string_data[:10]
@@ -71,6 +72,7 @@ class Reserva(Resource):
 
             if success:
                 if 'token' in corpo:
+                    fernet = Fernet(KEY)
                     usuario = UsuarioModel.find_by_email(fernet.decrypt(str(corpo['token']).encode()).decode())
                     if len(usuario.reservas) < 2:
                         reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
@@ -104,6 +106,7 @@ class MinhaReserva(Resource):
         '''
 
         if token:
+            fernet = Fernet(KEY)
             usuario = UsuarioModel.find_by_email(fernet.decrypt(token.encode()).decode())
             reservas = ReservaModel.find_by_user(usuario)
             if reservas:
