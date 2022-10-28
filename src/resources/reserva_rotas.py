@@ -3,7 +3,6 @@ from flask import request, jsonify, redirect
 from model.models import ReservaModel, AquarioModel, UsuarioModel
 
 from flask_login import current_user
-from app import app
 
 import datetime
 
@@ -42,7 +41,6 @@ class Reserva(Resource):
         
         return {'mensagem': 'Aquário não encontrado'}, 404
 
-    @app.route()
     def post(self, predio, andar, numero):
         '''
         Rota para adicionar uma reserva em um determinado aquário
