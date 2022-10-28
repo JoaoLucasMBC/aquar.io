@@ -46,7 +46,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
-    return UsuarioModel.query.filter_by(id=int(id)).first()
+    return UsuarioModel.query.get(int(id))
 
 admin = Admin(app, name='aquar.io', template_mode='bootstrap3')
 admin.add_view(ModelView(AquarioModel, db.session))
