@@ -31,7 +31,7 @@ def login():
     if user:
         if check_password_hash(user.password, corpo['password']):
             flash('Logado com sucesso', category='sucess')
-            login_user(user, remember=True)
+            login_user(user, remember=True, force=True)
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':current_user.email,
