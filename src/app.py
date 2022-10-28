@@ -22,6 +22,8 @@ from flask_login import LoginManager, login_required
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from flask_cors import CORS
+
 
 # Resistente a sistema operacional
 FILE = Path(__file__).resolve()
@@ -31,6 +33,7 @@ rel_arquivo_db = Path('model/aquario.db')
 caminho_arq_db = src_folder / rel_arquivo_db
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{caminho_arq_db.resolve()}'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://dwlijhricezcmf:68bd4bc1ff93594ee7937d3f2e97e4937afbc1384996b61013f78c88b0bc13f0@ec2-54-161-255-125.compute-1.amazonaws.com:5432/ddsvjv69vdumm7'
