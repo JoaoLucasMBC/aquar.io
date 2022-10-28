@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, jsonify, redirect
-from model.models import ReservaModel, AquarioModel
+from model.models import ReservaModel, AquarioModel, UsuarioModel
 
 from flask_login import current_user
 
@@ -69,17 +69,22 @@ class Reserva(Resource):
             success = ReservaModel.reserva_check(horario_inicial,horario_final,aquario.id)
 
             if success:
-                if len(current_user.reservas) < 2:
-                    reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
-                    reserva.save()
-                    
-                    return {
-                        'mensagem': 'Reserva feita com sucesso',
-                        'reserva': reserva.to_dict()
-                        }, 201
-                else:
-                    return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
-        
+                if current_user:
+                    user = UsuarioModel.find_by_email(current_user.email)
+
+                    if len(user.reservas) < 2:
+                        reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
+                        reserva.save()
+                        
+                        return {
+                            'mensagem': 'Reserva feita com sucesso',
+                            'reserva': reserva.to_dict()
+                            }, 201
+                    else:
+                        return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
+                
+                return {"mensagem": "Usuário não logado"}, 400
+            
             return {'mensagem': "Esses horário estão indisponíveis"}, 400
 
         return {'mensagem': 'Aquário não foi encontrado'}, 404  
