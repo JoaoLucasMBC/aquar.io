@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request, jsonify, redirect, session
+from flask import request, jsonify, redirect
 from model.models import ReservaModel, AquarioModel, UsuarioModel
 
 from flask_login import current_user
@@ -69,9 +69,8 @@ class Reserva(Resource):
 
             if success:
                 if current_user:
-                    user = UsuarioModel.query.filter_by(id=session['user_id']).first()
 
-                    if len(user.reservas) < 2:
+                    if len(current_user.reservas) < 2:
                         reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
                         reserva.save()
                         

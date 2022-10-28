@@ -1,6 +1,6 @@
 import datetime
  
-from flask import Flask, session
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from pathlib import Path
@@ -49,7 +49,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
-    return UsuarioModel.query.get(int(session['user_id']))
+    return UsuarioModel.query.get(int(id))
 
 admin = Admin(app, name='aquar.io', template_mode='bootstrap3')
 admin.add_view(ModelView(AquarioModel, db.session))
