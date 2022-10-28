@@ -3,6 +3,8 @@ from model.models import UsuarioModel
 from flask_login import login_user,login_required,logout_user,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from token_aquario import fernet
+
 auth = Blueprint('auth', __name__)
 
 '''
@@ -33,11 +35,11 @@ def login():
             flash('Logado com sucesso', category='sucess')
             login_user(user, remember=True, force=True)
 
-            session['user_id'] = user.id
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
-                'email':current_user.email,
-                'user':current_user.user
+                'email':user.email,
+                'user':user.user,
+                'token': fernet.encrypt(user.email.encode()).decode()
             }}, 200
         
         return {'mensagem': 'Senha incorreta'}, 400

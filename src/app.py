@@ -63,27 +63,6 @@ api = Api(app)
 def create_tables():
     db.create_all()
 
-    '''
-    new_user = UsuarioModel(email= 'joaolmbc@al.insper.edu.br', password=generate_password_hash('1234567890',method= 'sha256'), user = 'joaolmbc')
-    new_user.save()
-    new_user1 = UsuarioModel(email= 'liviat1@al.insper.edu.br', password=generate_password_hash('1234567890',method= 'sha256'), user = 'liviat1')
-    new_user1.save()
-
-    new_aquario = AquarioModel(building=1, floor=0, number=12, capacity=5)
-    new_aquario.save()
-    new_aquario1 = AquarioModel(building=1, floor=0, number=13, capacity=5)
-    new_aquario1.save()
-    new_aquario2 = AquarioModel(building=2, floor=2, number=4, capacity=8)
-    new_aquario2.save()
-    new_aquario3 = AquarioModel(building=2, floor=5, number=1, capacity=8)
-    new_aquario3.save()
-
-    new_reserva = ReservaModel(usuario_id=1, aquario_id=1, horario_inicial=datetime.datetime(2022, 10, 30, 12, 0, 0), horario_final=datetime.datetime(2022, 10, 30, 14, 0, 0))
-    new_reserva.save()
-    new_reserva1 = ReservaModel(usuario_id=2, aquario_id=2, horario_inicial=datetime.datetime(2022, 11, 2, 11, 0, 0), horario_final=datetime.datetime(2022, 11, 2, 15, 30, 0))
-    new_reserva1.save()
-    '''
-
 
 @app.after_request
 def exclui_reservas(response):

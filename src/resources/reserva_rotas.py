@@ -4,6 +4,8 @@ from model.models import ReservaModel, AquarioModel, UsuarioModel
 
 from flask_login import current_user
 
+from token_aquario import fernet
+
 import datetime
 
 def formata_data(string_data):
@@ -68,10 +70,10 @@ class Reserva(Resource):
             success = ReservaModel.reserva_check(horario_inicial,horario_final,aquario.id)
 
             if success:
-                if current_user:
-
-                    if len(current_user.reservas) < 2:
-                        reserva = ReservaModel(usuario_id=current_user.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
+                if 'token' in corpo:
+                    usuario = UsuarioModel.find_by_email(fernet.decrypt(str(corpo['token']).encode()).decode())
+                    if len(usuario.reservas) < 2:
+                        reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
                         reserva.save()
                         
                         return {
@@ -81,7 +83,7 @@ class Reserva(Resource):
                     else:
                         return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
                 
-                return {"mensagem": "Usuário não logado"}, 400
+                return {"mensagem": "Usuário não autenticado"}, 401
             
             return {'mensagem': "Esses horário estão indisponíveis"}, 400
 
@@ -100,13 +102,21 @@ class MinhaReserva(Resource):
             Sucesso: dicionário das reservas
             Erro: 'Mensagem de erro'
         '''
-        if current_user:
-            reservas = ReservaModel.find_by_user(current_user)
+        try:
+            corpo = request.get_json(force=True)
+        except:
+            return {'mensagem': 'Problema ao parsear o JSON'}, 400
+
+        if 'token' in corpo:
+            usuario = UsuarioModel.find_by_email(fernet.decrypt(corpo['token'].encode()).decode())
+            reservas = ReservaModel.find_by_user(usuario)
             if reservas:
                 reservas = [reserva.to_dict() for reserva in reservas]
                 return {'reservas': reservas}, 200
             else:
                 return {'mensagem': 'Reservas não encontradas'}, 404
+        
+        return {'mensagem': 'Usuário não autenticado'}, 401
 
 
     def delete(self):
