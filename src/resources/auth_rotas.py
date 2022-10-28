@@ -33,6 +33,8 @@ def login():
             flash('Logado com sucesso', category='sucess')
             login_user(user, remember=True, force=True)
 
+            session['user_id'] = user.id
+
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':current_user.email,
                 'user':current_user.user
