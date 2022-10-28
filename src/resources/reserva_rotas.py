@@ -72,7 +72,7 @@ class Reserva(Resource):
 
             if success:
                 if 'token' in corpo:
-                    fernet = Fernet(KEY)
+                    fernet = Fernet(KEY.encode())
                     usuario = UsuarioModel.find_by_email(fernet.decrypt(str(corpo['token']).encode()).decode())
                     if len(usuario.reservas) < 2:
                         reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
@@ -106,7 +106,7 @@ class MinhaReserva(Resource):
         '''
 
         if token:
-            fernet = Fernet(KEY)
+            fernet = Fernet(KEY.encode())
             usuario = UsuarioModel.find_by_email(fernet.decrypt(token.encode()).decode())
             reservas = ReservaModel.find_by_user(usuario)
             if reservas:

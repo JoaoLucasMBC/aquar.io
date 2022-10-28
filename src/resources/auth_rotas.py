@@ -38,7 +38,7 @@ def login():
             flash('Logado com sucesso', category='sucess')
             login_user(user, remember=True, force=True)
 
-            fernet = Fernet(KEY)
+            fernet = Fernet(KEY.encode())
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':user.email,
