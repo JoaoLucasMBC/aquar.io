@@ -86,7 +86,7 @@ api.add_resource(ListaAquarios, '/aquario/<int:predio>')
 api.add_resource(Aquario, '/aquario/<int:predio>/<int:andar>/<int:numero>')
 api.add_resource(Usuario, '/usuario')
 api.add_resource(Reserva, '/aquario/<int:predio>/<int:andar>/<int:numero>/reserva')
-api.add_resource(MinhaReserva, '/reserva')
+api.add_resource(MinhaReserva, '/usuario/<string:token>/reserva')
 
 
 db.init_app(app)

@@ -93,7 +93,7 @@ class Reserva(Resource):
 
 class MinhaReserva(Resource):
 
-    def get(self):
+    def get(self, token):
         '''
         Rota para encontrar as reservas de um determinado usuário
 
@@ -102,13 +102,9 @@ class MinhaReserva(Resource):
             Sucesso: dicionário das reservas
             Erro: 'Mensagem de erro'
         '''
-        try:
-            corpo = request.get_json(force=True)
-        except:
-            return {'mensagem': 'Problema ao parsear o JSON'}, 400
 
-        if 'token' in corpo:
-            usuario = UsuarioModel.find_by_email(fernet.decrypt(corpo['token'].encode()).decode())
+        if token:
+            usuario = UsuarioModel.find_by_email(fernet.decrypt(token.encode()).decode())
             reservas = ReservaModel.find_by_user(usuario)
             if reservas:
                 reservas = [reserva.to_dict() for reserva in reservas]
@@ -119,7 +115,7 @@ class MinhaReserva(Resource):
         return {'mensagem': 'Usuário não autenticado'}, 401
 
 
-    def delete(self):
+    def delete(self, token):
         '''
         Rota para deletar uma reserva de um determinado usuário
             
