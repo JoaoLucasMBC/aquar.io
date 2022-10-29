@@ -76,7 +76,7 @@ class Reserva(Resource):
 
                     try:
                         usuario = UsuarioModel.find_by_email(email)
-                    except cryptography.fernet.InvalidToken:
+                    except cryptography.exceptions.InvalidSignature:
                         return {'mensagem': 'Token inválido'}, 400
 
                     if len(usuario.reservas) < 2:
@@ -117,7 +117,7 @@ class MinhaReserva(Resource):
 
             try:
                 usuario = UsuarioModel.find_by_email(email)
-            except cryptography.fernet.InvalidToken:
+            except cryptography.exceptions.InvalidSignature:
                 return {'mensagem': 'Token inválido'}, 400
 
             reservas = ReservaModel.find_by_user(usuario)
