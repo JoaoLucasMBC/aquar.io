@@ -1,3 +1,1 @@
-from cryptography.fernet import Fernet
- 
-fernet = Fernet(Fernet.generate_key())
+SECRET_KEY = 'r4AKmLM41NljU9iU1IRlZw'

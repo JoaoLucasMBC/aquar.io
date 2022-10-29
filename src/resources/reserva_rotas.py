@@ -1,9 +1,9 @@
 from flask_restful import Resource
-from flask import request, jsonify, redirect
+from flask import request, jsonify
 from model.models import ReservaModel, AquarioModel, UsuarioModel
 
-from token_aquario import fernet
-import cryptography
+from itsdangerous import URLSafeSerializer as Serializer
+from token_aquario import SECRET_KEY
 
 import datetime
 
@@ -70,26 +70,27 @@ class Reserva(Resource):
 
             if success:
                 if 'token' in corpo:
-                    token = str(corpo['token']).encode()
-                    email = fernet.decrypt(token)
-                    email = email.decode()
-
                     try:
-                        usuario = UsuarioModel.find_by_email(email)
-                    except cryptography.exceptions.InvalidSignature:
+                        email = Serializer(SECRET_KEY).loads(corpo['token'])
+                    except:
                         return {'mensagem': 'Token inválido'}, 400
 
-                    if len(usuario.reservas) < 2:
-                        reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
-                        reserva.save()
-                        
-                        return {
-                            'mensagem': 'Reserva feita com sucesso',
-                            'reserva': reserva.to_dict()
-                            }, 201
-                    else:
-                        return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
-                
+                    usuario = UsuarioModel.find_by_email(email)
+            
+                    if usuario:
+                        if len(usuario.reservas) < 2:
+                            reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
+                            reserva.save()
+                            
+                            return {
+                                'mensagem': 'Reserva feita com sucesso',
+                                'reserva': reserva.to_dict()
+                                }, 201
+                        else:
+                            return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
+                    
+                    return {'mensagem': 'Token inválido ou Logado em outro dispositivo'}, 400
+                    
                 return {"mensagem": "Usuário não autenticado"}, 401
             
             return {'mensagem': "Esses horário estão indisponíveis"}, 400
@@ -111,22 +112,23 @@ class MinhaReserva(Resource):
         '''
 
         if token:
-            token = str(token).encode()
-            email = fernet.decrypt(token)
-            email = email.decode()
-
             try:
-                usuario = UsuarioModel.find_by_email(email)
-            except cryptography.exceptions.InvalidSignature:
+                email = Serializer(SECRET_KEY).loads(token)
+            except:
                 return {'mensagem': 'Token inválido'}, 400
+                
+            usuario = UsuarioModel.find_by_email(email)
 
-            reservas = ReservaModel.find_by_user(usuario)
-            if reservas:
-                reservas = [reserva.to_dict() for reserva in reservas]
-                return {'reservas': reservas}, 200
-            else:
-                return {'mensagem': 'Reservas não encontradas'}, 404
-        
+            if usuario:
+                reservas = ReservaModel.find_by_user(usuario)
+                if reservas:
+                    reservas = [reserva.to_dict() for reserva in reservas]
+                    return {'reservas': reservas}, 200
+                else:
+                    return {'mensagem': 'Reservas não encontradas'}, 404
+            
+            return {'mensagem': 'Token inválido ou Logado em outro dispositivo'}, 400
+            
         return {'mensagem': 'Usuário não autenticado'}, 401
 
 

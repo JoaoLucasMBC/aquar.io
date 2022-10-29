@@ -3,7 +3,8 @@ from model.models import UsuarioModel
 from flask_login import login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from token_aquario import fernet
+from itsdangerous import URLSafeSerializer as Serializer
+from token_aquario import SECRET_KEY
 
 auth = Blueprint('auth', __name__)
 
@@ -34,13 +35,12 @@ def login():
         if check_password_hash(user.password, corpo['password']):
             login_user(user, remember=True, force=True)
 
-            email = user.email.encode()
-            token = fernet.encrypt(email)
+            token = Serializer(SECRET_KEY).dumps(user.email)
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':user.email,
                 'user':user.user,
-                'token': token.decode()
+                'token': token
             }}, 200
         
         return {'mensagem': 'Senha incorreta'}, 400
