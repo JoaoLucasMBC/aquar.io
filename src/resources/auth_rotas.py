@@ -1,6 +1,6 @@
-from flask import Blueprint, redirect, render_template, request,flash, session, url_for
+from flask import Blueprint, request
 from model.models import UsuarioModel
-from flask_login import login_user,login_required,logout_user,current_user
+from flask_login import login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from token_aquario import fernet
@@ -32,20 +32,19 @@ def login():
 
     if user:
         if check_password_hash(user.password, corpo['password']):
-            flash('Logado com sucesso', category='sucess')
             login_user(user, remember=True, force=True)
 
+            email = user.email.encode()
+            token = fernet.encrypt(email)
 
             return {'mensagem': 'Logado com sucesso', 'usuário':{
                 'email':user.email,
                 'user':user.user,
-                'token': fernet.encrypt(user.email.encode()).decode()
+                'token': token.decode()
             }}, 200
         
         return {'mensagem': 'Senha incorreta'}, 400
     else:
-        flash('Deu errado', category='error')
-
         return {'mensagem': 'Usuário não encontrado com esse email'}, 404
 
 
@@ -67,17 +66,12 @@ def sign_up():
 
 
     if corpo['email'][-17:] != "@al.insper.edu.br":
-        flash("Deve ser utilizado o email do insper", category='error')
-
         return {'mensagem': 'Deve ser utilizado o email do Insper'}, 400
 
     elif len(corpo['password']) < 8:
-        flash('Senha deve ter mais de 8 caracteres', category='error')
-
         return {'mensagem': 'Senha deve ter mais de 8 caracteres'}, 400
 
     else:
-        flash('Conta criada!', category='sucess')
         new_user = UsuarioModel(email= corpo['email'], password=generate_password_hash(corpo['password'],method= 'sha256'), user = corpo['email'].split('@')[0])
         new_user.save()
 

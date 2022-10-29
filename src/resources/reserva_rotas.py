@@ -2,9 +2,8 @@ from flask_restful import Resource
 from flask import request, jsonify, redirect
 from model.models import ReservaModel, AquarioModel, UsuarioModel
 
-from flask_login import current_user
-
 from token_aquario import fernet
+import cryptography
 
 import datetime
 
@@ -71,7 +70,15 @@ class Reserva(Resource):
 
             if success:
                 if 'token' in corpo:
-                    usuario = UsuarioModel.find_by_email(fernet.decrypt(str(corpo['token']).encode()).decode())
+                    token = str(corpo['token']).encode()
+                    email = fernet.decrypt(token)
+                    email = email.decode()
+
+                    try:
+                        usuario = UsuarioModel.find_by_email(email)
+                    except cryptography.fernet.InvalidToken:
+                        return {'mensagem': 'Token inválido'}, 400
+
                     if len(usuario.reservas) < 2:
                         reserva = ReservaModel(usuario_id=usuario.id, aquario_id=aquario.id, horario_inicial=horario_inicial, horario_final=horario_final)
                         reserva.save()
@@ -104,7 +111,15 @@ class MinhaReserva(Resource):
         '''
 
         if token:
-            usuario = UsuarioModel.find_by_email(fernet.decrypt(token.encode()).decode())
+            token = str(token).encode()
+            email = fernet.decrypt(token)
+            email = email.decode()
+
+            try:
+                usuario = UsuarioModel.find_by_email(email)
+            except cryptography.fernet.InvalidToken:
+                return {'mensagem': 'Token inválido'}, 400
+
             reservas = ReservaModel.find_by_user(usuario)
             if reservas:
                 reservas = [reserva.to_dict() for reserva in reservas]
