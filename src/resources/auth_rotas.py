@@ -49,7 +49,7 @@ def login():
 
 
 
-@auth.route('/cadastro', methods= ['POST'])
+@auth.route('/usuario', methods= ['POST'])
 def sign_up():
     '''
     Rota para realizar o cadastro de usuário
