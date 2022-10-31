@@ -77,6 +77,7 @@ def atualiza_reservas(response):
                 # Libera o aquário se a reserva já passou e o aquário estava como ocupado
                 if aquario.status == True:
                     aquario.status = False
+                    aquario.last_updated = datetime.datetime.now() - datetime.timedelta(hours=3)
                     aquario.save()
             # Deleta a reserva se ela é do mês passado
             if reserva.horario_final.month < datetime.datetime.now().month:
@@ -85,6 +86,7 @@ def atualiza_reservas(response):
             if reserva.horario_incial < (datetime.datetime.now() - datetime.timedelta(hours=3)) and reserva.horario_final > (datetime.datetime.now() - datetime.timedelta(hours=3)) and reserva.esta_aberta == True:
                 aquario = reserva.aquario
                 aquario.status = True
+                aquario.last_updated = datetime.datetime.now() - datetime.timedelta(hours=3)
                 aquario.save()
     return response
 
