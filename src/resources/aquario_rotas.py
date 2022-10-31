@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask_restful import Resource
 from flask import make_response, request, jsonify
 from model.models import AquarioModel
@@ -63,6 +64,8 @@ class Aquario(Resource):
                 aquario.status = False
             elif aquario.status == False:
                 aquario.status = True
+            
+            aquario.last_updated = datetime.now() - timedelta(hours=3)
             aquario.save()
             
             return aquario.to_dict(), 200  
