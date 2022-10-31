@@ -65,15 +65,27 @@ def create_tables():
 
 
 @app.after_request
-def exclui_reservas(response):
+def atualiza_reservas(response):
     reservas = ReservaModel.list_all()
     for reserva in reservas:
         if reserva:
-            if reserva.horario_final < datetime.datetime.now():
+            # Fecha a reserva se ela já passou e ainda está aberta
+            if reserva.horario_final < datetime.datetime.now() and reserva.esta_aberta == True:
                 reserva.esta_aberta = False
                 reserva.save()
+                aquario = reserva.aquario
+                # Libera o aquário se a reserva já passou e o aquário estava como ocupado
+                if aquario.status == True:
+                    aquario.status = False
+                    aquario.save()
+            # Deleta a reserva se ela é do mês passado
             if reserva.horario_final.month < datetime.datetime.now().month:
                 reserva.delete()
+            # Se está no período da reserva e ela está aberta, atualiza o status do aquário para ocupad
+            if reserva.horario_incial < datetime.datetime.now() and reserva.horario_final > datetime.datetime.now() and reserva.esta_aberta == True:
+                aquario = reserva.aquario
+                aquario.status = True
+                aquario.save()
     return response
 
 

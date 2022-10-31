@@ -78,7 +78,7 @@ class ReservaModel(db.Model):
             'usuario_id':self.usuario_id,
             'aquario':self.aquario.to_dict(),
             'esta_aberta':self.esta_aberta,
-            'dia': self.horario_incial.strftime("%m/%d"), 
+            'dia': self.horario_incial.strftime("%d/%m"),
             'horario_inicial':self.horario_incial.strftime("%H:%M"),
             'horario_final':self.horario_final.strftime("%H:%M")
         }

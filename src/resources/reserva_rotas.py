@@ -73,7 +73,7 @@ class Reserva(Resource):
                     try:
                         email = Serializer(SECRET_KEY).loads(corpo['token'])
                     except:
-                        return {'mensagem': 'Token inválido'}, 400
+                        return {'mensagem': 'Usuário não cadastrado'}, 400
 
                     usuario = UsuarioModel.find_by_email(email)
             
@@ -87,13 +87,13 @@ class Reserva(Resource):
                                 'reserva': reserva.to_dict()
                                 }, 201
                         else:
-                            return {"mensagem": "As reservas são limitadas a um número máximo de dois"},400
+                            return {"mensagem": "As reservas são limitadas a um máximo de dois por aluno"},400
                     
                     return {'mensagem': 'Token inválido ou Logado em outro dispositivo'}, 400
                     
                 return {"mensagem": "Usuário não autenticado"}, 401
             
-            return {'mensagem': "Esses horário estão indisponíveis"}, 400
+            return {'mensagem': "Esses horários estão indisponíveis"}, 400
 
         return {'mensagem': 'Aquário não foi encontrado'}, 404  
 
@@ -115,7 +115,7 @@ class MinhaReserva(Resource):
             try:
                 email = Serializer(SECRET_KEY).loads(token)
             except:
-                return {'mensagem': 'Token inválido'}, 400
+                return {'mensagem': 'Usuáruo não cadastrado'}, 400
                 
             usuario = UsuarioModel.find_by_email(email)
 
