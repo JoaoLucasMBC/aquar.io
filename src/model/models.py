@@ -173,7 +173,7 @@ class AquarioModel(db.Model):
     status = db.Column(db.Boolean, default=False)
     capacity = db.Column(db.Integer)
     num_people = db.Column(db.Integer, default=0)
-    last_updated = db.Column(db.DateTime, onupdate=datetime.datetime.now, default=datetime.datetime.now)
+    last_updated = db.Column(db.DateTime, onupdate=(datetime.datetime.now - datetime.timedelta(hours=3)), default=(datetime.datetime.now - datetime.timedelta(hours=3)))
 
     reservas = db.relationship("ReservaModel", back_populates="aquario")
 
@@ -185,7 +185,7 @@ class AquarioModel(db.Model):
         self.status = status
         self.capacity = capacity
         self.num_people = 0
-        self.last_updated = datetime.datetime.now()
+        self.last_updated = datetime.datetime.now() - datetime.timedelta(hours=3)
     
     def __repr__(self):
         return f"Aquario('{self.info}', '{self.status}')"
