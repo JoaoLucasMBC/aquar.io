@@ -173,7 +173,7 @@ class AquarioModel(db.Model):
     status = db.Column(db.Boolean, default=False)
     capacity = db.Column(db.Integer)
     num_people = db.Column(db.Integer, default=0)
-    last_updated = db.Column(db.DateTime, onupdate=(datetime.datetime.now - datetime.timedelta(hours=3)), default=(datetime.datetime.now - datetime.timedelta(hours=3)))
+    last_updated = db.Column(db.DateTime, onupdate=(datetime.datetime.now), default=(datetime.datetime.now))
 
     reservas = db.relationship("ReservaModel", back_populates="aquario")
 
