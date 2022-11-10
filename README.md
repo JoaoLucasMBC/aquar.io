@@ -21,4 +21,4 @@ OBS: deve ser acessado pelo **celular**, ou pelo computador com celular selecion
 
 ### Front-End (FlutterFlow)
 * Gustavo Pacheco
-* Livia Tanaka
+* Livia Tanaka 
