@@ -14,8 +14,11 @@ OBS: deve ser acessado pelo **celular**, ou pelo computador com celular selecion
 
 ## Integrantes  
 
+### Back-End (Flask)
 * Eduardo Mendes Vaz  
 * Gustavo Antony  
-* Gustavo Pacheco  
 * João Lucas de Moraes Barros Cadorniga  
+
+### Front-End (FlutterFlow)
+* Gustavo Pacheco
 * Livia Tanaka
